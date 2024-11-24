@@ -58,19 +58,19 @@ def run(username: str):
         print(f"Screenshot taken successfully: {screenshot_path}")
         
         # Process the image
-        image = Image.open(screenshot_path)
-        crop_box = (1200, 0, 2400, 1200)
-        cropped_image = image.crop(crop_box)
-        output_path = f"{username}-profile.png"
-        cropped_image.save(output_path)
-        print(f"Cropped image saved to: {output_path}")
+        # image = Image.open(screenshot_path)
+        # crop_box = (1200, 0, 2400, 1200)
+        # cropped_image = image.crop(crop_box)
+        # output_path = f"{username}-profile.png"
+        # cropped_image.save(output_path)
+        # print(f"Cropped image saved to: {output_path}")
         
         # Delete the original screenshot
-        if os.path.exists(screenshot_path):
-            os.remove(screenshot_path)
-            print(f"Deleted original screenshot: {screenshot_path}")
+        # if os.path.exists(screenshot_path):
+        #     os.remove(screenshot_path)
+        #     print(f"Deleted original screenshot: {screenshot_path}")
             
-        return output_path
+        return screenshot_path
         
     except Exception as e:
         logging.error(f"An error occurred: {str(e)}")
