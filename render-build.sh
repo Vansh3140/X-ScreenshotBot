@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 # exit on error
 set -o errexit
-
 # Enable debug mode
 set -x
-
 # Define storage directory
 STORAGE_DIR=/opt/render/project/.render
 
@@ -34,34 +32,22 @@ if [ "$success" = false ]; then
     exit 1
 fi
 
-# Install ChromeDriver
-echo "...Installing ChromeDriver"
-mkdir -p $STORAGE_DIR/chromedriver
-cd $STORAGE_DIR/chromedriver
-
-# Download ChromeDriver 114
-CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/114.0.5735.90/linux64/chromedriver-linux64.zip"
-if ! wget -q "$CHROMEDRIVER_URL" -O chromedriver.zip; then
-    echo "Failed to download ChromeDriver"
-    exit 1
-fi
-
-unzip -q chromedriver.zip
-chmod +x chromedriver-linux64/chromedriver
-mv chromedriver-linux64/chromedriver ./
-rm -rf chromedriver-linux64 chromedriver.zip
-
-# Export PATH for the current session
-export PATH="$STORAGE_DIR/chrome/chrome-linux64:$STORAGE_DIR/chromedriver:$PATH"
+# Export Chrome path
+export PATH="$STORAGE_DIR/chrome/chrome-linux64:$PATH"
 
 # Create version file
 echo "CHROME_VERSION=114.0.5735.90" > $STORAGE_DIR/versions.txt
-echo "CHROMEDRIVER_VERSION=114.0.5735.90" >> $STORAGE_DIR/versions.txt
 
 # Print debug information
 echo "Contents of chrome directory:"
 ls -la $STORAGE_DIR/chrome
-echo "Contents of chromedriver directory:"
-ls -la $STORAGE_DIR/chromedriver
 
-echo "Build script completed successfully"
+# Verify Chrome is executable
+if [ -x "$STORAGE_DIR/chrome/chrome-linux64/chrome" ]; then
+    echo "Chrome is executable"
+else
+    echo "Error: Chrome is not executable"
+    exit 1
+fi
+
+echo "Chrome installation completed successfully"
