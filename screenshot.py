@@ -29,9 +29,9 @@ def run(username: str):
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--start-maximized")
     options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
-
-    options.binary_location = os.getenv("GOOGLE_CHROME_BIN", "/usr/bin/google-chrome")
-
+    
+    # Path to Chrome installed in Render
+    options.binary_location = '/opt/render/project/.render/chrome/opt/google/chrome/chrome'
     
     # Initialize the WebDriver with ChromeDriverManager to install ChromeDriver automatically
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
