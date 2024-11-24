@@ -34,7 +34,7 @@ def run(username: str):
     options.binary_location = '/opt/render/project/.render/chrome/opt/google/chrome/chrome'
     
     # Initialize the WebDriver with ChromeDriverManager to install ChromeDriver automatically
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager(version="114").install()), options=options)
 
     # Open the base URL
     driver.get("https://x.com")  # Open the website
