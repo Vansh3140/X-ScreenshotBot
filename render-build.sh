@@ -1,32 +1,28 @@
 #!/usr/bin/env bash
+# exit on error
+set -o errexit
 
-# Update and install basic dependencies
-apt-get update && apt-get install -y wget gnupg unzip
+# Define storage directory for the render build
+STORAGE_DIR=/opt/render/project/.render
 
-# Install dependencies required for Chrome
-apt-get install -y \
-    libx11-xcb1 \
-    libfontconfig1 \
-    libxrandr2 \
-    libxss1 \
-    libgdk-pixbuf2.0-0 \
-    libasound2 \
-    libnss3 \
-    libxcomposite1 \
-    libxdamage1 \
-    libglu1-mesa
+# Check if Chrome is already downloaded and extracted
+if [[ ! -d $STORAGE_DIR/chrome ]]; then
+  echo "...Downloading Chrome"
+  mkdir -p $STORAGE_DIR/chrome
+  cd $STORAGE_DIR/chrome
+  wget -P ./ https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  
+  # Extract the .deb package
+  dpkg -x ./google-chrome-stable_current_amd64.deb $STORAGE_DIR/chrome
+  rm ./google-chrome-stable_current_amd64.deb  # Clean up the downloaded file
+  
+  echo "...Chrome installed in $STORAGE_DIR/chrome"
+else
+  echo "...Using Chrome from cache"
+fi
 
-# Install Google Chrome
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-apt-get install -y ./google-chrome-stable_current_amd64.deb
-rm -f google-chrome-stable_current_amd64.deb
+# Ensure Chrome is available in the PATH for the web service
+export PATH="${PATH}:$STORAGE_DIR/chrome/opt/google/chrome"
 
-# Verify Chrome installation
+# Optionally, verify Chrome is available
 google-chrome --version
-
-# Clean up to keep the environment clean
-apt-get clean
-
-export GOOGLE_CHROME_BIN=/usr/bin/google-chrome
-
-echo "Build script completed successfully."
