@@ -3,6 +3,7 @@ import logging
 import os
 from dotenv import load_dotenv
 from screenshot import run
+import time
 
 # Loading the environment variables
 load_dotenv()
@@ -121,4 +122,6 @@ def read_since_id():
 
 
 if __name__ == "__main__":
-    fetch_mentions()
+    while True:
+        fetch_mentions()
+        time.sleep(900)
