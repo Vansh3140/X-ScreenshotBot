@@ -31,14 +31,10 @@ def run(username: str):
     options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")  # Updated Chrome version
     
     # Path to Chrome installed in Render
-    options.binary_location = '/opt/render/project/.render/chrome/opt/google/chrome/chrome'
+    options.binary_location = "/opt/render/project/.render/chrome/chrome-linux64/chrome"
     
     # Initialize Chrome driver with undetected-chromedriver
-    driver = uc.Chrome(
-        driver_executable_path='/opt/render/project/.render/chromedriver/chromedriver',  # Path to chromedriver from build script
-        options=options,
-        version_main=114 # Match your Chrome version
-    )
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     
     # Rest of your code remains the same
     try:
