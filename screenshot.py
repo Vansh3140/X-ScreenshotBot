@@ -28,7 +28,7 @@ def run(username: str):
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--start-maximized")
     options.add_argument("--disable-dev-shm-usage")  # Added this for Render
-    options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")  # Updated Chrome version
+    options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")  # Updated Chrome version
     
     # Path to Chrome installed in Render
     options.binary_location = '/opt/render/project/.render/chrome/opt/google/chrome/chrome'
@@ -37,7 +37,7 @@ def run(username: str):
     driver = uc.Chrome(
         driver_executable_path='/opt/render/project/.render/chromedriver/chromedriver',  # Path to chromedriver from build script
         options=options,
-        version_main=131  # Match your Chrome version
+        version_main=114 # Match your Chrome version
     )
     
     # Rest of your code remains the same
