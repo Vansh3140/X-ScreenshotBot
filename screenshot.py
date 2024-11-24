@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 import logging
 
 load_dotenv()
-
 # Initializing the logging 
 logging.basicConfig(
     level=logging.DEBUG,  
@@ -28,16 +27,19 @@ def run(username: str):
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--start-maximized")
     options.add_argument("--disable-dev-shm-usage")  # Added this for Render
-    options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")  # Updated Chrome version
+    options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
     
     # Path to Chrome installed in Render
     options.binary_location = "/opt/render/project/.render/chrome/chrome-linux64/chrome"
     
-    # Initialize Chrome driver with undetected-chromedriver
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    
-    # Rest of your code remains the same
     try:
+        # Initialize Chrome driver with undetected-chromedriver
+        driver = uc.Chrome(
+            options=options,
+            service=Service(),
+            version_main=114  # Specify Chrome version
+        )
+        
         # Open the base URL
         driver.get("https://x.com")
         
@@ -74,4 +76,5 @@ def run(username: str):
         logging.error(f"An error occurred: {str(e)}")
         raise
     finally:
-        driver.quit()
+        if 'driver' in locals():
+            driver.quit()
