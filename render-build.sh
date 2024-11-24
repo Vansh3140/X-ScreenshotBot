@@ -5,7 +5,7 @@ set -o errexit
 # Define storage directory for the render build
 STORAGE_DIR=/opt/render/project/.render
 
-# Check if Chrome is already downloaded and extracted
+# Install Chrome if not present
 if [[ ! -d $STORAGE_DIR/chrome ]]; then
   echo "...Downloading Chrome"
   mkdir -p $STORAGE_DIR/chrome
@@ -21,8 +21,26 @@ else
   echo "...Using Chrome from cache"
 fi
 
-# Ensure Chrome is available in the PATH for the web service
-export PATH="${PATH}:$STORAGE_DIR/chrome/opt/google/chrome"
+# Get Chrome version
+CHROME_VERSION=$(google-chrome --version | cut -d ' ' -f 3 | cut -d '.' -f 1)
+echo "Chrome version: $CHROME_VERSION"
 
-# Optionally, verify Chrome is available
+# Install matching ChromeDriver
+echo "...Installing matching ChromeDriver"
+mkdir -p $STORAGE_DIR/chromedriver
+cd $STORAGE_DIR/chromedriver
+
+CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+unzip -o /tmp/chromedriver.zip
+chmod +x chromedriver
+rm /tmp/chromedriver.zip
+
+# Add both Chrome and ChromeDriver to PATH
+export PATH="${PATH}:$STORAGE_DIR/chrome/opt/google/chrome:$STORAGE_DIR/chromedriver"
+
+# Verify installations
+echo "Chrome version:"
 google-chrome --version
+echo "ChromeDriver version:"
+chromedriver --version
