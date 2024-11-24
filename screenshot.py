@@ -59,7 +59,7 @@ def run(username: str):
         
         # Process the image
         image = Image.open(screenshot_path)
-        crop_box = (600, 0, 1800, 600)
+        crop_box = (600, 0, 1200, 600)
         cropped_image = image.crop(crop_box)
         output_path = f"{username}-profile.png"
         cropped_image.save(output_path)
