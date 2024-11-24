@@ -2,45 +2,54 @@
 # exit on error
 set -o errexit
 
-# Define storage directory for the render build
+# Install dependencies
+apt-get update && apt-get install -y \
+    wget \
+    unzip \
+    libglib2.0-0 \
+    libnss3 \
+    libgconf-2-4 \
+    libfontconfig1 \
+    libxss1 \
+    libasound2 \
+    libxtst6 \
+    xvfb
+
+# Define storage directory
 STORAGE_DIR=/opt/render/project/.render
 
-# Install Chrome if not present
-if [[ ! -d $STORAGE_DIR/chrome ]]; then
-  echo "...Downloading Chrome"
-  mkdir -p $STORAGE_DIR/chrome
-  cd $STORAGE_DIR/chrome
-  wget -P ./ https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  
-  # Extract the .deb package
-  dpkg -x ./google-chrome-stable_current_amd64.deb $STORAGE_DIR/chrome
-  rm ./google-chrome-stable_current_amd64.deb  # Clean up the downloaded file
-  
-  echo "...Chrome installed in $STORAGE_DIR/chrome"
-else
-  echo "...Using Chrome from cache"
-fi
+# Install Chrome
+echo "...Installing Chrome"
+mkdir -p $STORAGE_DIR/chrome
+cd $STORAGE_DIR/chrome
+wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+dpkg -x ./google-chrome-stable_current_amd64.deb $STORAGE_DIR/chrome
+rm ./google-chrome-stable_current_amd64.deb
 
-# Get Chrome version
-CHROME_VERSION=$(google-chrome --version | cut -d ' ' -f 3 | cut -d '.' -f 1)
-echo "Chrome version: $CHROME_VERSION"
+# Create symlink for Chrome
+ln -sf $STORAGE_DIR/chrome/opt/google/chrome/chrome /usr/local/bin/google-chrome
 
-# Install matching ChromeDriver
-echo "...Installing matching ChromeDriver"
+# Install ChromeDriver
+echo "...Installing ChromeDriver"
 mkdir -p $STORAGE_DIR/chromedriver
 cd $STORAGE_DIR/chromedriver
 
+# Get matching versions
+CHROME_VERSION=$(google-chrome --version | cut -d ' ' -f 3 | cut -d '.' -f 1)
 CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+
+echo "Chrome version: $CHROME_VERSION"
+echo "ChromeDriver version: $CHROMEDRIVER_VERSION"
+
 wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
 unzip -o /tmp/chromedriver.zip
 chmod +x chromedriver
 rm /tmp/chromedriver.zip
 
-# Add both Chrome and ChromeDriver to PATH
-export PATH="${PATH}:$STORAGE_DIR/chrome/opt/google/chrome:$STORAGE_DIR/chromedriver"
+# Create symlink for ChromeDriver
+ln -sf $STORAGE_DIR/chromedriver/chromedriver /usr/local/bin/chromedriver
 
 # Verify installations
-echo "Chrome version:"
+echo "Verifying installations..."
 google-chrome --version
-echo "ChromeDriver version:"
 chromedriver --version
