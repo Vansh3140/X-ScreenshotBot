@@ -50,7 +50,7 @@ def run(username: str):
         
         # Navigate to the user's profile
         driver.get(f"https://x.com/{username}")
-        time.sleep(20)
+        time.sleep(40)
         
         # Take a screenshot
         screenshot_path = f"{username}-screenshot.png"
